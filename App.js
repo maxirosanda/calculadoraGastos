@@ -1,24 +1,38 @@
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
+import AddTheme from './src/screens/AddTheme'
+import AddPerson from './src/screens/AddPerson'
+import AddExpense from './src/screens/AddExpense'
 
 const App = () => {
 
-  const [inputTheme,setInputTheme] = useState("")
-  const [inputNameExpense,setInputNameExpense] = useState("")
-  const [inputValueExpense,setInputValueExpense] = useState("")
-  const [inputNameBuyer,setInputNameBuyer] = useState("")
-  const [inputNamePerson,setInputNamePerson] = useState("")
-  const [theme,setTheme] = useState({})
+  const [inputTheme, setInputTheme] = useState("")
+  const [expense, setExpense] = useState({})
+  const [inputNamePerson, setInputNamePerson] = useState("")
+  const [theme, setTheme] = useState({})
+  const [continueExpense, setContinueExpense] = useState(false) //despues se va
 
   useEffect(()=>{
     console.log(theme)
   },[theme])
 
+  const handleInputTheme = (t) => {
+    setInputTheme(t)
+  }
+
+  const handleInputNamePerson = (t) => {
+    setInputNamePerson(t)
+  }
+
+  const handleExpense = (name,value) => {
+    setExpense({...expense,[name]:value})
+  }
+
 
   const handleAddTheme = () => {
     setTheme({
       name:inputTheme,
-      expense:[],
+      expenses:[],
       persons:[],
       total:0
     })
@@ -27,16 +41,8 @@ const App = () => {
 
   const handleAddExpense = () => {
 
-    const expense = {
-      name:inputNameExpense,
-      value:inputValueExpense,
-      buyer:inputNameBuyer
-    }
-
-    setTheme({...theme,expense:[...theme.expense,expense]})
-    setInputNameExpense("")
-    setInputValueExpense("")
-    setInputNameBuyer("")
+    setTheme({...theme,expenses:[...theme.expenses,expense]})
+    setExpense({})
   }
 
   const handleAddPerson = () =>{
@@ -45,92 +51,34 @@ const App = () => {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputsContainer}>
-        <Text style={styles.inputsTitle}>Tema de la Compra</Text>
-        <TextInput 
-          placeholder='Ingrese tema' 
-          value={inputTheme} 
-          onChangeText={setInputTheme}
-          style={styles.input}
+    <>
+      {theme.name ?
+        continueExpense ?
+        <AddExpense
+          expense={expense}
+          handleExpense={handleExpense}
+          handleAddExpense={handleAddExpense}
+
         />
-        <Pressable style={styles.button} onPress={handleAddTheme}>
-          <Text style={styles.textButton} >Agregar Tema</Text>
-        </Pressable>
-      </View>
-      <View style={styles.inputsContainer}>
-        <Text style={styles.inputsTitle}>Agregar Persona</Text>
-        <TextInput 
-          placeholder='Ingrese nombre de una persona' 
-          value={inputNamePerson} 
-          onChangeText={setInputNamePerson}
-          style={styles.input}
+        :
+        <AddPerson
+        inputNamePerson={inputNamePerson}
+        handleInputNamePerson={handleInputNamePerson}
+        handleAddPerson={handleAddPerson}
+        setContinueExpense={setContinueExpense}
+        
         />
-        <Pressable style={styles.button} onPress={handleAddPerson}>
-          <Text style={styles.textButton} >Agregar Persona</Text>
-        </Pressable>
-      </View>
-      <View style={styles.inputsContainer}>
-        <Text style={styles.inputsTitle}>Agregar Gastos</Text>
-        <TextInput 
-          placeholder='Ingrese nombre del gasto' 
-          value={inputNameExpense} 
-          onChangeText={setInputNameExpense}
-          style={styles.input}
-        />
-           <TextInput 
-          placeholder='Ingrese valor del gasto ' 
-          value={inputValueExpense} 
-          onChangeText={setInputValueExpense}
-          style={styles.input}
-        />
-           <TextInput 
-          placeholder='Ingrese nombre de la persona que realizo el pago' 
-          value={inputNameBuyer} 
-          onChangeText={setInputNameBuyer}
-          style={styles.input}
-        />
-        <Pressable style={styles.button} onPress={handleAddExpense}>
-          <Text style={styles.textButton} >Agregar Tema</Text>
-        </Pressable>
-      </View>
-    </View>
+      :
+      <AddTheme 
+      inputTheme={inputTheme} 
+      handleInputTheme={handleInputTheme} 
+      handleAddTheme={handleAddTheme}
+    />
+    }
+    </>
   )
 }
 
 export default App
 
-const styles = StyleSheet.create({
-  container:{
-    paddingTop:30,
-    flex:1,
-    backgroundColor:"red"
-  },
-  inputsContainer:{},
-  inputsTitle:{
-    color:"white",
-    margin:10,
-    fontSize:18,
-    fontWeight:"bold"
-  },
-  input:{
-    backgroundColor:"#D9D9D9",
-    padding:10,
-    width:"95%",
-    marginHorizontal:"2.5%",
-    marginVertical:10,
-    borderRadius:3
-  },
-  button:{
-    width:"95%",
-    marginHorizontal:"2.5%",
-    marginVertical:10,
-    backgroundColor:"#88147C",
-    padding:10,
-    justifyContent:"center",
-    alignItems:"center"
-  },
-  textButton:{
-    color:"white"
-  }
-})
+const styles = StyleSheet.create({})
